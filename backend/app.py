@@ -161,6 +161,11 @@ class RAGSystemAPI:
     def build_bm25_from_chunks(self, chunks):
         corpus = [c["text"] if c["text"] else "" for c in chunks]
         tokenized = [doc.split() for doc in corpus]
+        # Handle empty chunks to avoid division by zero in BM25Okapi
+        if len(tokenized) == 0:
+            # Return a dummy BM25 instance for empty corpus
+            # Create a minimal corpus with a dummy document
+            tokenized = [["dummy"]]
         bm25 = BM25Okapi(tokenized)
         return bm25, tokenized
     
